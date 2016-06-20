@@ -19,6 +19,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
 
+    <script type="text/javascript" src="js/Chart.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/outsList.js"></script>
 
@@ -185,6 +186,10 @@
     <i class='fa fa-user-plus' aria-hidden='true'></i>
   </div>
 
+  <div id="chart-button" data-toggle="modal" data-target="#chartModal" onclick="updateChart()" class="hidden">
+    <i class='fa fa-line-chart' aria-hidden='true'></i>
+  </div>
+
 </div>
 
 <div id="scoreboard">
@@ -329,6 +334,31 @@
   </div>
 </div>
 <!-- END Join Modal -->
+
+<!-- Chart Modal -->
+
+<div id="chartModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h4 class="modal-title">Science, bitch!</h4>
+    </div>
+
+    <div class="modal-body">
+        <canvas style="max-width: 640px; height: 340px" id="lineChart" width="600" height="330"></canvas>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" data-dismiss="modal">Stäng</button>
+    </div>
+  </div>
+
+  </div>
+</div>
+  
+<!-- END Chart Modal -->
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>

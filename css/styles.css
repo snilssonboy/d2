@@ -151,6 +151,23 @@ svg {
   top: 10px;
   left: 15px; }
 
+#chart-button {
+  height: 40px;
+  width: 90px;
+  background-color: #5cb85c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-radius: 2px;
+  position: absolute;
+  top: 60px;
+  left: 15px; }
+
+#chartModal .modal-content {
+  width: 700px;
+  height: 500px; }
+
 /* SWITCH BUTTON */
 .switch {
   position: relative;

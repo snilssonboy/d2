@@ -2,10 +2,11 @@ var players = [];
 
 var gameArchive = [];
 
-var Player = function(NAME, ACTIVE, SCORE, HITS){
+var Player = function(NAME, ACTIVE, SCORE, SCOREDATA, HITS){
 	this.name = NAME;
 	this.active = ACTIVE;
 	this.score = SCORE;
+	this.scoreData = SCOREDATA;
 	this.hits = HITS;
 }
 
@@ -18,6 +19,13 @@ var Game = function(PLAYERS, MODE, ENDDOUBLE, ONGOING, HITS, VICTOR){
 	this.victor = VICTOR;
 }
 
+var dataColors = {
+		bg: ["rgba(75,192,192,0.4)", "rgba(255,80,76,0.4)", "rgba(82,216,84,0.4)", "rgba(235,227,40,0.4)"],
+		border: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"],
+		pointBorder: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"],
+		pointHoverBg: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"]
+};
+
 $(document).ready(function(){
 	$("#dartboard #areas g").children().mousedown(function(){
 		if(typeof game != 'undefined' && game.length != 0){
@@ -27,9 +35,12 @@ $(document).ready(function(){
 				updateHitsPanel();
 			}
 		}
-		
-	window.scrollTo(0,1);
+
 	});
+
+	window.scrollTo(0,1);
+
+	//updateChart();
 
 	$(document).click(function(event){
 		if(typeof game != 'undefined' && game.length != 0){
@@ -45,10 +56,10 @@ window.onbeforeunload = function() {
   //return "Om du har ett pågående spel försvinner datan om du laddar om sidan!";
 };
 
-players.push(new Player("Simon", false, 0, []));
-players.push(new Player("Kim", false, 0, []));
-players.push(new Player("Jari", false, 0, []));
-players.push(new Player("Erik", false, 0, []));
+players.push(new Player("Simon", false, 0, [], []));
+players.push(new Player("Kim", false, 0, [], []));
+players.push(new Player("Jari", false, 0, [], []));
+players.push(new Player("Erik", false, 0, [], []));
 
 
 //Shuffle array function
@@ -271,7 +282,7 @@ function clearInput(){
 function createNewPlayer(){
 	var name = $("#new-player-name").val();
 
-	players.push(new Player(name, false, 0, []));
+	players.push(new Player(name, false, 0, [], []));
 
 	clearInput();
 	updatePlayerList();
@@ -280,7 +291,7 @@ function createNewPlayer(){
 function joinCreateNewPlayer(){
 	var name = $("#join-new-player-name").val();
 
-	players.push(new Player(name, false, 0, []));
+	players.push(new Player(name, false, 0, [], []));
 
 	clearInput();
 	updateJoinList();
@@ -294,6 +305,7 @@ function addScore(){
 		console.log("If enddouble");
 		if((game.players[0].score - calculateScore()) == 0 && game.hits[game.hits.length - 1].substring(0,1) == "D"){
 			game.players[0].score -= calculateScore();
+			game.players[0].scoreData.push(game.players[0].score);
 
 			game.victor.push(game.players[0]);
 			game.ongoing = false;
@@ -301,6 +313,7 @@ function addScore(){
 
 			$("#abort-button").addClass("hidden");
 			$("#join-button").addClass("hidden");
+			$("#chart-button").addClass("hidden");
 
 			$("#undoButton").addClass("hidden");
 			$("#missButton").addClass("hidden");
@@ -312,17 +325,14 @@ function addScore(){
 
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 2){
-			console.log("enddouble fet");
 		}else{
-			console.log("enddouble inte fet");
-
-			console.log(game.players[0].score - calculateScore());
-
 			game.players[0].score -= calculateScore();
+			game.players[0].scoreData.push(game.players[0].score);
 		}
 	}else{
 		if(game.players[0].score - calculateScore() == 0){
 			game.players[0].score -= calculateScore();
+			game.players[0].scoreData.push(game.players[0].score);
 
 			game.victor.push(game.players[0]);
 			game.ongoing = false;
@@ -330,6 +340,7 @@ function addScore(){
 
 			$("#abort-button").addClass("hidden");
 			$("#join-button").addClass("hidden");
+			$("#chart-button").addClass("hidden");
 
 			$("#undoButton").addClass("hidden");
 			$("#missButton").addClass("hidden");
@@ -341,11 +352,9 @@ function addScore(){
 
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 0){
-			console.log("no enddouble fet");
 		}else{
 			game.players[0].score -= calculateScore();
-
-			console.log("no enddouble inte fet");
+			game.players[0].scoreData.push(game.players[0].score);
 		}
 	}
 	
@@ -366,6 +375,7 @@ function undoLast(){
 		game.players[0].score += calculateScore(game.hits);
 
 		game.players[0].hits.splice(game.players[0].hits.length - 1, 1);
+		game.players[0].scoreData.splice(game.players[0].scoreData.length - 1, 1);
 
 		gameManager();	
 	}else{
@@ -407,12 +417,14 @@ function startNewGame(){
 		for(var i = 0; i < game.players.length; i++){
 			game.players[i].score = gamemode;
 			game.players[i].hits = [];
+			game.players[i].scoreData.push(gamemode);
 		}
 		console.log("Spel startat, game mode: " + gamemode);
 	}
 
 	$("#abort-button").removeClass("hidden");
 	$("#join-button").removeClass("hidden");
+	$("#chart-button").removeClass("hidden");
 
 	$("#openStats").addClass("hidden");
 	$("#openSettings").addClass("hidden");
@@ -426,6 +438,79 @@ function startNewGame(){
 	clearInput();
 }
 
+function updateChart(){
+	console.log("Skriver chart");
+
+	var rounds = 0;
+
+	for(var i = 0; i < game.players.length; i++){
+		if(rounds < game.players[i].scoreData.length){
+			rounds = game.players[i].scoreData.length;
+		}
+	}
+
+	var playerData = [];
+
+	for(var x = 0; x < game.players.length; x++){
+		playerData.push({
+			label: game.players[x].name,
+			fill: false,
+			lineTension: 0.1,
+			backgroundColor: dataColors.bg[x],
+			borderColor: dataColors.border[x],
+			borderCapStyle: 'butt',
+			borderDash: [],
+			borderDashOffset: 0.0,
+			borderJoinStyle: 'miter',
+			pointBorderColor: dataColors.pointBorder[x],
+			pointBackgroundColor: "#fff",
+			pointBorderWidth: 1,
+			pointHoverRadius: 5,
+			pointHoverBackgroundColor: dataColors.pointHoverBg[x],
+			pointHoverBorderColor: "rgba(220,220,220,1)",
+			pointHoverBorderWidth: 2,
+			pointRadius: 1,
+			pointHitRadius: 10,
+			data: game.players[x].scoreData
+		});
+	}
+
+	var data = {
+	    labels: ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8"],
+	    datasets: playerData
+	};
+
+	var lineOptions = {
+	    animation: true,
+	    pointDot: true,
+	    scaleOverride : true,
+	    scaleShowGridLines : false,
+	    scaleShowLabels : true,
+	    scaleSteps : 4,
+		scaleStepWidth : 25,
+		scaleStartValue : 25,
+	};
+
+	var ctx = document.getElementById("lineChart");
+
+	var chartInstance = new Chart(ctx, {
+	    type: 'line',
+	    data: data,
+	    options: {
+	        scales: {
+	            yAxes: [{
+	                ticks: {
+	                    max: 300,
+	                    min: 0,
+	                    stepSize: 50
+	                }
+	            }]
+	        }
+	    }
+	});
+
+}
+
 function abortCurrentGame(){
 	var confirm = window.confirm("Är du säker på att du vill avsulta pågående spel?");
 
@@ -436,6 +521,7 @@ function abortCurrentGame(){
 
 		$("#abort-button").addClass("hidden");
 		$("#join-button").addClass("hidden");
+		$("#chart-button").addClass("hidden");
 
 		$("#undoButton").addClass("hidden");
 		$("#missButton").addClass("hidden");

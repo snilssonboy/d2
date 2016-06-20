@@ -1,0 +1,6 @@
+{
+  "name": "DartApp 2.0",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "any"
+}

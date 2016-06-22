@@ -480,6 +480,7 @@ function startNewGame(){
 		for(var i = 0; i < game.players.length; i++){
 			game.players[i].score = gamemode;
 			game.players[i].hits = [];
+			game.players[i].scoreData = [];
 			game.players[i].scoreData.push(gamemode);
 		}
 		console.log("Spel startat, game mode: " + gamemode);

@@ -2,6 +2,8 @@ var players = [];
 
 var gameArchive = [];
 
+var game = [];
+
 var Player = function(NAME, ACTIVE, SCORE, SCOREDATA, HITS){
 	this.name = NAME;
 	this.active = ACTIVE;
@@ -20,19 +22,67 @@ var Game = function(PLAYERS, MODE, ENDDOUBLE, ONGOING, HITS, VICTOR){
 }
 
 var dataColors = {
-		bg: ["rgba(75,192,192,0.4)", "rgba(255,80,76,0.4)", "rgba(82,216,84,0.4)", "rgba(235,227,40,0.4)"],
-		border: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"],
-		pointBorder: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"],
-		pointHoverBg: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)"]
+	bg: ["rgba(75,192,192,0.4)", "rgba(255,80,76,0.4)", "rgba(82,216,84,0.4)", "rgba(235,227,40,0.4)", "rgba(162,58,252,0.4)", "rgba(1,249,247,0.4)", "rgba(253,183,0,0.4)"],
+	border: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)", "rgba(162,58,252,1)", "rgba(1,249,247,1)", "rgba(253,183,0,1)"],
+	pointBorder: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)", "rgba(162,58,252,1)", "rgba(1,249,247,1)", "rgba(253,183,0,1)"],
+	pointHoverBg: ["rgba(75,192,192,1)", "rgba(255,80,76,1)", "rgba(82,216,84,1)", "rgba(235,227,40,1)", "rgba(162,58,252,1)", "rgba(1,249,247,1)", "rgba(253,183,0,1)"]
 };
 
+function save(){
+	var save = {
+		players: players,
+		gameArchive: gameArchive,
+		game: game
+	};
+
+	localStorage.setItem("save", JSON.stringify(save));
+}
+
+function load(){
+	var savegame = JSON.parse(localStorage.getItem("save"));
+
+	if(typeof savegame.players !== 'undefined'){
+		players = savegame.players;
+	}
+
+	if(typeof savegame.gameArchive !== 'undefined'){
+		gameArchive = savegame.gameArchive;
+	}
+
+	if(typeof savegame.game !== 'undefined'){
+		if(savegame.game.length != 0 && savegame.game.victor.length == 0){
+			game = savegame.game;
+			$("#abort-button").removeClass("hidden");
+			$("#join-button").removeClass("hidden");
+			$("#chart-button").removeClass("hidden");
+
+			$("#openStats").addClass("hidden");
+			$("#openSettings").addClass("hidden");
+			$("#openStart").addClass("hidden");
+
+			$("#undoButton").removeClass("hidden");
+			$("#missButton").removeClass("hidden");
+			$("#doneButton").removeClass("hidden");
+			gameManager();
+		}
+	}
+
+}
+
+function deleteSave(){
+	localStorage.removeItem("save");
+}
+
 $(document).ready(function(){
+	load();
+
 	$("#dartboard #areas g").children().mousedown(function(){
 		if(typeof game != 'undefined' && game.length != 0){
 			if(game.hits.length < 3){
 				game.hits.push($(this).context.id);
 				$(this).css("fill", "#BDE7F5");
 				updateHitsPanel();
+				save();
 			}
 		}
 
@@ -47,6 +97,7 @@ $(document).ready(function(){
 			if(game.hits.length < 3 && event.target.id === "missButton"){
 				game.hits.push("Miss");
 				updateHitsPanel();
+				save();
 			}
 		}
 	});
@@ -55,12 +106,6 @@ $(document).ready(function(){
 window.onbeforeunload = function() {
   //return "Om du har ett pågående spel försvinner datan om du laddar om sidan!";
 };
-
-players.push(new Player("Simon", false, 0, [], []));
-players.push(new Player("Kim", false, 0, [], []));
-players.push(new Player("Jari", false, 0, [], []));
-players.push(new Player("Erik", false, 0, [], []));
-
 
 //Shuffle array function
 function shuffle(a) {
@@ -153,6 +198,7 @@ function updateHitsPanel(){
 function removeHit(i){
 	game.hits.splice(i, 1);
 	updateHitsPanel();
+	save();
 }
 
 function updatePlayerList(){
@@ -171,6 +217,16 @@ function updatePlayerList(){
 		}
 	}
 	
+}
+
+function removePlayer(id){
+	var confirm;
+	confirm = window.confirm("Säker att du vill ta bort " + players[id].name + "? Detta går inte att ångra!");
+	if(confirm){
+		players.splice(id, 1);
+		updatePlayerList();	
+		save();
+	}
 }
 
 function updateJoinList(){
@@ -211,6 +267,7 @@ function joinLeaveGame(id, ingame){
 
 	updateJoinList();
 	gameManager();
+	save();
 }
 
 function toggleActive(i){
@@ -260,7 +317,7 @@ function gameManager(){
 			}
 		}
 	}
-	
+	save();
 }
 
 Array.prototype.move = function (old_index, new_index) {
@@ -286,6 +343,7 @@ function createNewPlayer(){
 
 	clearInput();
 	updatePlayerList();
+	save();
 }
 
 function joinCreateNewPlayer(){
@@ -295,6 +353,7 @@ function joinCreateNewPlayer(){
 
 	clearInput();
 	updateJoinList();
+	save();
 }
 
 function addScore(){
@@ -302,7 +361,6 @@ function addScore(){
 	game.players[0].hits.push(game.hits);
 
 	if(game.enddouble){
-		console.log("If enddouble");
 		if((game.players[0].score - calculateScore()) == 0 && game.hits[game.hits.length - 1].substring(0,1) == "D"){
 			game.players[0].score -= calculateScore();
 			game.players[0].scoreData.push(game.players[0].score);
@@ -323,11 +381,13 @@ function addScore(){
 			$("#openSettings").removeClass("hidden");
 			$("#openStart").removeClass("hidden");
 
+			save();
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 2){
 		}else{
 			game.players[0].score -= calculateScore();
 			game.players[0].scoreData.push(game.players[0].score);
+			save();
 		}
 	}else{
 		if(game.players[0].score - calculateScore() == 0){
@@ -350,11 +410,13 @@ function addScore(){
 			$("#openSettings").removeClass("hidden");
 			$("#openStart").removeClass("hidden");
 
+			save();
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 0){
 		}else{
 			game.players[0].score -= calculateScore();
 			game.players[0].scoreData.push(game.players[0].score);
+			save();
 		}
 	}
 	
@@ -362,6 +424,7 @@ function addScore(){
 
 	game.hits = [];
 	gameManager();
+	save();
 }
 
 function undoLast(){

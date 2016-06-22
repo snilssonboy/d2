@@ -12,6 +12,8 @@ body{
 	/* Rules below not implemented in browsers yet */
 	-o-user-select: none;
 	user-select: none;
+
+	overflow: hidden;
 }
 
 #dartboard{
@@ -189,10 +191,10 @@ svg{
 	left: 15px;	
 }
 
-#chartModal .modal-content{
+/*#chartModal .modal-content{
 	width: 700px;
 	height: 500px;
-}
+}*/
 
 /* SWITCH BUTTON */
 

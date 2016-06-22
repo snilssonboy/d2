@@ -382,6 +382,8 @@ function addScore(){
 			$("#openStart").removeClass("hidden");
 
 			save();
+			updateChart();
+			$("#chartModal").modal("show");
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 2){
 		}else{
@@ -411,6 +413,8 @@ function addScore(){
 			$("#openStart").removeClass("hidden");
 
 			save();
+			updateChart();
+			$("#chartModal").modal("show");
 			return window.alert(game.players[0].name + " är segraren!");
 		}else if((game.players[0].score - calculateScore()) < 0){
 		}else{

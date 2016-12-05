@@ -150,7 +150,7 @@ function calculateScore(){
 
 			return score;
 		}else if((game.players[0].score - score) < 2){
-			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ") FET");	
+			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ") FET");
 			$("#scoreboard-panel table tbody tr.active td:nth-child(3)").html("-");
 
 			return score;
@@ -158,7 +158,7 @@ function calculateScore(){
 			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ")");
 			$("#scoreboard-panel table tbody tr.active td:nth-child(3)").html(getOut(game.players[0].score - score));
 
-			return score;	
+			return score;
 		}
 	}else{
 		if((game.players[0].score - score) == 0){
@@ -167,7 +167,7 @@ function calculateScore(){
 
 			return score;
 		}else if((game.players[0].score - score) < 0){
-			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ") FET");	
+			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ") FET");
 			$("#scoreboard-panel table tbody tr.active td:nth-child(3)").html("-");
 
 			return score;
@@ -175,7 +175,7 @@ function calculateScore(){
 			$("#scoreboard-panel table tbody tr.active td:nth-child(2)").html(game.players[0].score + " (" + (game.players[0].score - score) + ")");
 			$("#scoreboard-panel table tbody tr.active td:nth-child(3)").html(getOut(game.players[0].score - score));
 
-			return score;	
+			return score;
 		}
 	}
 }
@@ -190,9 +190,9 @@ function updateHitsPanel(){
 			$("#" + game.hits[i]).css("fill", "#BDE7F5");
 		}
 
-		calculateScore();	
+		calculateScore();
 	}
-	
+
 }
 
 function removeHit(i){
@@ -206,17 +206,17 @@ function updatePlayerList(){
 
 	for(var i = 0; i < players.length; i++){
 		if(players[i].active){
-			$("#new-game-players").append("<tr class='active'><th>" + players[i].name + "</th><td><div id='custom-button-red' onclick='toggleActive(" + i + ")'><i class='fa fa-minus' aria-hidden='true'></i></div></td><td style='text-align: right'><div class='pull-right' id='custom-button-red' onclick='removePlayer(" + i + ")'><i class='fa fa-times' aria-hidden='true'></i></div></td></tr>");	
+			$("#new-game-players").append("<tr class='active'><th>" + players[i].name + "</th><td><div id='custom-button-red' onclick='toggleActive(" + i + ")'><i class='fa fa-minus' aria-hidden='true'></i></div></td><td style='text-align: right'><div class='pull-right' id='custom-button-red' onclick='removePlayer(" + i + ")'><i class='fa fa-times' aria-hidden='true'></i></div></td></tr>");
 		}
-		
+
 	}
 
 	for(var x = 0; x < players.length; x++){
 		if(!players[x].active){
-			$("#new-game-players").append("<tr><th>" + players[x].name + "</th><td><div id='custom-button-green' onclick='toggleActive(" + x + ")'><i class='fa fa-plus' aria-hidden='true'></i></div></td><td style='text-align: right'><div class='pull-right' id='custom-button-red' onclick='removePlayer(" + x + ")'><i class='fa fa-times' aria-hidden='true'></i></div></td></tr>");	
+			$("#new-game-players").append("<tr><th>" + players[x].name + "</th><td><div id='custom-button-green' onclick='toggleActive(" + x + ")'><i class='fa fa-plus' aria-hidden='true'></i></div></td><td style='text-align: right'><div class='pull-right' id='custom-button-red' onclick='removePlayer(" + x + ")'><i class='fa fa-times' aria-hidden='true'></i></div></td></tr>");
 		}
 	}
-	
+
 }
 
 function removePlayer(id){
@@ -224,7 +224,7 @@ function removePlayer(id){
 	confirm = window.confirm("Säker att du vill ta bort " + players[id].name + "? Detta går inte att ångra!");
 	if(confirm){
 		players.splice(id, 1);
-		updatePlayerList();	
+		updatePlayerList();
 		save();
 	}
 }
@@ -304,14 +304,14 @@ function gameManager(){
 			var lastHits;
 
 			if(game.players[i].hits.length != 0){
-				lastHits = game.players[i].hits[game.players[i].hits.length - 1];	
+				lastHits = game.players[i].hits[game.players[i].hits.length - 1];
 			}else{
 				lastHits = "-";
 			}
-			
+
 
 			if(i == 0){
-				$("#player-table").append("<tr class='active'><th>" + game.players[i].name + "</th><td>" + game.players[i].score + "</td><td>" + getOut(game.players[i].score) + "</td><td>" + lastHits + "</td></tr>");	
+				$("#player-table").append("<tr class='active'><th>" + game.players[i].name + "</th><td>" + game.players[i].score + "</td><td>" + getOut(game.players[i].score) + "</td><td>" + lastHits + "</td></tr>");
 			}else{
 				$("#player-table").append("<tr><th>" + game.players[i].name + "</th><td>" + game.players[i].score + "</td><td>" + getOut(game.players[i].score) + "</td><td>" + lastHits + "</td></tr>");
 			}
@@ -423,7 +423,7 @@ function addScore(){
 			save();
 		}
 	}
-	
+
 	game.players.move(0, game.players.length - 1);
 
 	game.hits = [];
@@ -444,15 +444,15 @@ function undoLast(){
 		game.players[0].hits.splice(game.players[0].hits.length - 1, 1);
 		game.players[0].scoreData.splice(game.players[0].scoreData.length - 1, 1);
 
-		gameManager();	
+		gameManager();
 	}else{
 		window.alert("Går inte att backa mer");
 	}
-	
+
 }
 
 function startNewGame(){
-	console.log("Startar spel"); 
+	console.log("Startar spel");
 
 	var gamemode;
 
@@ -568,7 +568,7 @@ function updateChart(){
 	        scales: {
 	            yAxes: [{
 	                ticks: {
-	                    max: 300,
+	                    max: game.mode - 1,
 	                    min: 0,
 	                    stepSize: 50
 	                }

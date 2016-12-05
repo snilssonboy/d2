@@ -268,3 +268,83 @@ svg {
   -webkit-transition: All 0.3s ease;
   -moz-transition: All 0.3s ease;
   -o-transition: All 0.3s ease; }
+
+#ophop-box {
+  z-index: 10;
+  position: fixed;
+  top: 200px;
+  right: 100px;
+  border-radius: 4px;
+  background-color: rgba(255, 238, 0, 0.24);
+  width: 200px;
+  height: 75px; }
+
+#ophop-current {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: -1px; }
+
+#ophop-up {
+  position: absolute;
+  left: 2px;
+  bottom: 2px;
+  height: 55px;
+  width: 50px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid grey;
+  border-radius: 4px; }
+
+#ophop-submit {
+  position: absolute;
+  top: 18px;
+  height: 27px;
+  left: 55px;
+  width: 90px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid grey;
+  border-radius: 4px; }
+
+#ophop-input {
+  position: absolute;
+  bottom: 2px;
+  width: 90px;
+  left: 55px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid grey;
+  color: white; }
+
+#ophop-input::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: white; }
+
+#ophop-down {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  height: 55px;
+  width: 50px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid grey;
+  border-radius: 4px; }
+
+#ophop-title-box {
+  position: absolute;
+  width: 100%;
+  justify-content: middle;
+  top: -22px; }
+
+#ophop-title-text {
+  background-color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  border-radius: 5px; }
+
+#ophop-toggle {
+  z-index: 10;
+  position: fixed;
+  width: 100px;
+  height: 25px;
+  top: 150px;
+  right: 200px;
+  background-color: white; }
